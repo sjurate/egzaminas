@@ -9,7 +9,6 @@ function MainC() {
   const [lastUpdate, setLastUpdate] = useState(Date.now());
   const [createData, setCreateData] = useState(null);
   const [deleteData, setDeleteData] = useState(null);
-  //const [editData, setEditData] = useState(null);
   const [categories, setCategories] = useState(null);
 
   // CREATE category
@@ -51,41 +50,22 @@ function MainC() {
       });
   }, [deleteData]);
 
-  // UPDATE category
-
-  // useEffect(() => {
-  //   if (null === editData) {
-  //     return;
-  //   }
-  //   axios
-  //     .put(
-  //       "http://localhost:3003/home/categories/" + editData.id,
-  //       editData,
-  //       authConfig()
-  //     )
-  //     .then((res) => {
-  //       setLastUpdate(Date.now());
-  //     });
-  // }, [editData]);
-
   return (
     <CategoriesContext.Provider
       value={{
         setCategories,
         categories,
         setCreateData,
-        // editData,
-        // setEditData,
         deleteData,
         setDeleteData,
       }}
     >
       <div className="container">
         <div className="row">
-          <div className="col col-lg-4 col-md-12">
+          <div className="col-lg-4 col-md-12 col-sm-12">
             <CreateC />
           </div>
-          <div className="col col-lg-8 col-md-12">
+          <div className="col-lg-8 col-md-12 col-sm-12">
             <ListC />
           </div>
         </div>
