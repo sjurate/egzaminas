@@ -2,73 +2,55 @@ import { useContext, useState } from "react";
 import DataContext from "../../Contexts/DataContext";
 import HomeContext from "../../Contexts/HomeContext";
 
-function LineH({ storie }) {
-  const { setAmountData, setDonation } = useContext(HomeContext);
+function LineH({ book }) {
+  const { setStatusData } = useContext(HomeContext);
   const { setMsg } = useContext(DataContext);
 
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
 
-  const add = () => {
-    if (name === "" || name.length < 2 || name.length > 30) {
-      setMsg("Invalid name");
-      return;
-    }
-    if (amount === String || amount < 1 || amount > 1000000) {
-      setMsg("Minimum donation 1 Eur, maximum donation 1000000 Eur");
-      return;
-    }
-    if (amount > storie[1][0].amount_left) {
-      setMsg(
-        "We were hoping to collect less than you are willing to donate... "
-      );
-      return;
-    }
-    setDonation({
-      name,
-      amount_donating: Number(amount),
-      storie_id: storie[1][0].id,
+  const reserve = () => {
+    setStatusData({
+      id: book.id,
+      status: 1,
     });
-    setAmountData({
-      id: storie[1][0].id,
-      amount_donating: Number(amount),
-    });
-    setAmount("");
-    setName("");
   };
 
   return (
     <li className="list-group-item">
       <div className="li-content-one">
-        <h2 className="li-content-one-title">{storie[0]}</h2>
+        <h2 className="li-content-one-title">{book.name}</h2>
         <div className="li-content-one-main">
           <div className="li-content-one-img">
-            {storie[1][0].image ? (
+            {book.image ? (
               <div className="img-bin li-content-details">
-                <img src={storie[1][0].image} alt={storie[0]}></img>
+                <img src={book.image} alt={book.name}></img>
               </div>
             ) : (
               <div className="no-image">No image</div>
             )}
           </div>
           <div className="li-content-one-info">
+            <div className="li-content-details">Author: {book.author}</div>
             <div className="li-content-details">
-              We hope to raise {storie[1][0].amount_wanted} Eur
+              Category: {book.category_id}
             </div>
             <div className="li-content-details">
-              So far collected:{" "}
-              {storie[1][0].amount_collected ?? "no donations yet"} Eur
-            </div>
-            <div className="li-content-details">
-              Left to collect: {storie[1][0].amount_left} Eur
-            </div>
-            <div className="li-content-details">
-              Our story: {storie[1][0].info}
+              {book.status === 1 ? "Unavailable at the moment" : null}
             </div>
           </div>
+          {book.status === 0 ? (
+            <button
+              onClick={reserve}
+              type="button"
+              className="btn btn-outline-success"
+            >
+              Reserve
+            </button>
+          ) : null}
         </div>
       </div>
-      <div className="li-content-many">
+      {/* <div className="li-content-many">
         <h4>Already helped us:</h4>
         <ul className="list-group">
           {storie[1]?.map((d) =>
@@ -106,7 +88,7 @@ function LineH({ storie }) {
         <button onClick={add} type="button" className="btn btn-outline-success">
           Donate
         </button>
-      </div>
+      </div> */}
     </li>
   );
 }

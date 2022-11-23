@@ -6,70 +6,66 @@ import { authConfig } from "../../Functions/auth";
 
 function MainH() {
   const [lastUpdate, setLastUpdate] = useState(Date.now());
-  const [stories, setStories] = useState(null);
-  const [amountData, setAmountData] = useState(null);
-  const [donation, setDonation] = useState(null);
+  const [books, setBooks] = useState(null);
+  const [statusData, setStatusData] = useState(null);
+  const filterOn = useRef(false);
+  const filterWhat = useRef(null);
 
-  const reList = (data) => {
-    const d = new Map();
-    data.forEach((line) => {
-      if (d.has(line.title)) {
-        d.set(line.title, [...d.get(line.title), line]);
+  // const reList = (data) => {
+  //   const d = new Map();
+  //   data.forEach((line) => {
+  //     if (d.has(line.title)) {
+  //       d.set(line.title, [...d.get(line.title), line]);
+  //     } else {
+  //       d.set(line.title, [line]);
+  //     }
+  //   });
+  //   return [...d];
+  // };
+
+  // READ for list of books
+
+  useEffect(() => {
+    axios.get("http://localhost:3003/home/books", authConfig()).then((res) => {
+      if (filterOn.current) {
+        setBooks(
+          res.data.map((d, i) =>
+            filterWhat.current === d.cat_id
+              ? { ...d, show: true, row: i }
+              : { ...d, show: false, row: i }
+          )
+        );
       } else {
-        d.set(line.title, [line]);
+        setBooks(res.data.map((d, i) => ({ ...d, show: true, row: i })));
       }
     });
-    return [...d];
-  };
-
-  // READ for list of stories with donations
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:3003/home/stories-hp", authConfig())
-      .then((res) => {
-        console.log(reList(res.data));
-        setStories(reList(res.data));
-      });
   }, [lastUpdate]);
 
-  /// CREATE donation
+  // UPDATE books
 
   useEffect(() => {
-    if (null === donation) {
-      return;
-    }
-    axios
-      .post("http://localhost:3003/home/donations", donation, authConfig())
-      .then((res) => {
-        setLastUpdate(Date.now());
-      });
-  }, [donation]);
-
-  // UPDATE STORIE
-
-  useEffect(() => {
-    if (null === amountData) {
+    if (statusData === null) {
       return;
     }
     axios
       .put(
-        "http://localhost:3003/home/stories-donation/" + amountData.id,
-        amountData,
+        "http://localhost:3003/home/books/" + statusData.id,
+        statusData,
         authConfig()
       )
       .then((res) => {
         setLastUpdate(Date.now());
       });
-  }, [amountData]);
+  }, [statusData]);
 
   return (
     <HomeContext.Provider
       value={{
-        setDonation,
-        stories,
-        setAmountData,
-        setStories,
+        books,
+        setBooks,
+        setStatusData,
+        filterOn,
+        filterWhat,
       }}
     >
       <div className="container">

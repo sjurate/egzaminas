@@ -1,56 +1,44 @@
 import { useContext } from "react";
-import StoriesAdminContext from "../../Contexts/StoriesAdminContext";
+import BooksContext from "../../Contexts/BooksContext";
 
-function LineSA({ storie }) {
-  const { setEditData, setDeleteData } = useContext(StoriesAdminContext);
-
-  const remove = () => {
-    setDeleteData({ id: storie.id });
-  };
-
-  const approve = () => {
-    setEditData({ id: storie.id, status: 1 });
-  };
+function LineB({ book }) {
+  const { setDeleteData, setModalData } = useContext(BooksContext);
 
   return (
     <li className="list-group-item">
       <div className="li-content-one">
         <div className="li-content-one-main">
           <div className="li-content-one-img">
-            {storie.image ? (
+            {book.image ? (
               <div className="img-bin">
-                <img src={storie.image} alt={storie.title}></img>
+                <img src={book.image} alt={book.name}></img>
               </div>
             ) : (
               <div className="no-image">No image</div>
             )}
           </div>
           <div className="li-content-one-info">
+            <div className="li-content-details">Title {book.title}</div>
+            <div className="li-content-details">Author: {book.author}</div>
             <div className="li-content-details">
-              Story title: {storie.title}
+              Category: {book.category_id}
             </div>
             <div className="li-content-details">
-              Story description: {storie.info}
-            </div>
-            <div className="li-content-details">
-              Amount wanted: {storie.amount_wanted}
-            </div>
-            <div className="li-content-details">
-              Status: {storie.status ? "Approved" : "Not approved"}
+              Status: {book.status ? "Not reserved" : "Reserved"}
             </div>
           </div>
         </div>
       </div>
       <div className="li-btn-box">
         <button
-          onClick={approve}
+          onClick={() => setModalData(book)}
           type="button"
           className="btn btn-outline-success"
         >
-          Approve
+          Edit
         </button>
         <button
-          onClick={remove}
+          onClick={() => setDeleteData(book)}
           type="button"
           className="btn btn-outline-danger"
         >
@@ -61,4 +49,4 @@ function LineSA({ storie }) {
   );
 }
 
-export default LineSA;
+export default LineB;

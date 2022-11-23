@@ -1,25 +1,11 @@
 import { useContext, useEffect, useState, useRef } from "react";
-import StoriesUserContext from "../../Contexts/StoriesUserContext";
-import getBase64 from "../../Functions/getBase64";
+import CategoriesContext from "../../Contexts/CategoriesContext";
 
-function EditS() {
+function EditC() {
   const [title, setTitle] = useState("");
-  const [info, setInfo] = useState("");
-  const [amount_wanted, setAmount_wanted] = useState("");
-  const fileInput = useRef();
-  const [photoPrint, setPhotoPrint] = useState(null);
-  const [deletePhoto, setDeletePhoto] = useState(false);
-
-  const doPhoto = () => {
-    getBase64(fileInput.current.files[0])
-      .then((photo) => setPhotoPrint(photo))
-      .catch((_) => {
-        // tylim
-      });
-  };
 
   const { setEditData, modalData, setModalData } =
-    useContext(StoriesUserContext);
+    useContext(CategoriesContext);
 
   const edit = () => {
     setEditData({
@@ -118,4 +104,4 @@ function EditS() {
   );
 }
 
-export default EditS;
+export default EditC;

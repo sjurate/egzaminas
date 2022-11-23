@@ -1,19 +1,20 @@
 import { useState, useContext, useRef } from "react";
 import DataContext from "../../Contexts/DataContext";
-import StoriesUserContext from "../../Contexts/StoriesUserContext";
+import BooksContext from "../../Contexts/BooksContext";
 import getBase64 from "../../Functions/getBase64";
 
-function CreateS() {
-  const [title, setTitle] = useState("");
-  const [info, setInfo] = useState("");
-  const [amount_wanted, setAmount_wanted] = useState("");
+function CreateB() {
+  const [name, setName] = useState("");
+  const [author, setAuthor] = useState("");
+  // const [status, setStatus] = useState("");
+  // const [term, setTerm] = useState("");
+  // const [term_count, setTerm_count] = useState("");
   const [photoPrint, setPhotoPrint] = useState(null);
   const fileInput = useRef();
+  const [cat, setCat] = useState(0);
 
-  const { setCreateData, currentUserId } = useContext(StoriesUserContext);
+  const { setCreateData, categories } = useContext(BooksContext);
   const { setMsg } = useContext(DataContext);
-
-  console.log(currentUserId);
 
   const doPhoto = () => {
     getBase64(fileInput.current.files[0])
@@ -24,65 +25,70 @@ function CreateS() {
   };
 
   const add = () => {
-    if (title === "" || info === "" || amount_wanted === "") {
+    if (author === "" || name === "") {
       setMsg("Please fill all required fields");
       return;
     }
-    if (title.length < 3 || title.length > 30) {
-      setMsg("Title must be longer than 2 and shorter than 30 symbols");
+    if (author.length < 3 || author.length > 50) {
+      setMsg("Author name must be longer than 2 and shorter than 50 symbols");
       return;
     }
-    if (info.length < 10 || info.length > 2000) {
-      setMsg(
-        "Description must be longer than 10 and shorter than 2000 symbols"
-      );
+    if (name.length < 2 || name.length > 50) {
+      setMsg("Title must be longer than 2 and shorter than 50 symbols");
       return;
     }
     setCreateData({
-      title,
-      info,
-      amount_wanted: Number(amount_wanted),
-      amount_left: Number(amount_wanted),
-      user_id: Number(currentUserId),
+      author,
+      name,
       image: photoPrint,
+      category_id: parseInt(cat),
     });
-    setTitle("");
-    setInfo("");
-    setAmount_wanted("");
+    setAuthor("");
+    setName("");
     setPhotoPrint(null);
     fileInput.current.value = null;
+    setCat(0);
   };
 
   return (
     <div className="card m-4">
-      <h5 className="card-header">New Story</h5>
+      <h5 className="card-header">Add Book</h5>
       <div className="card-body">
         <div className="mb-3">
-          <label className="form-label">Story Title</label>
+          <label className="form-label">Author</label>
           <input
             type="text"
             className="form-control"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Info</label>
+          <label className="form-label">Title</label>
           <input
             type="text"
             className="form-control"
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Amount wanted</label>
-          <input
-            type="text"
-            className="form-control"
-            value={amount_wanted}
-            onChange={(e) => setAmount_wanted(e.target.value)}
-          />
+          <label className="form-label">Select Category</label>
+          <select
+            className="form-select"
+            value={cat}
+            onChange={(e) => setCat(e.target.value)}
+          >
+            <option value={0} disabled>
+              Choose from list
+            </option>
+
+            {categories?.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.title}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-3">
           <label className="form-label">Image</label>
@@ -106,4 +112,4 @@ function CreateS() {
   );
 }
 
-export default CreateS;
+export default CreateB;

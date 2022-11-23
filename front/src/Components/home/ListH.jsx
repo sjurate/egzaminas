@@ -11,7 +11,7 @@ import LineH from "./LineH";
 // ];
 
 function ListH() {
-  const { stories, setStories } = useContext(HomeContext);
+  const { books, setBooks } = useContext(HomeContext);
 
   //const [sortBy, setSortBy] = useState("default");
   // const [stats, setStats] = useState({ movieCount: null });
@@ -71,12 +71,10 @@ function ListH() {
         </div>
       </div> */}
       <div className="card m-4">
-        <h5 className="card-header">People Stories</h5>
+        <h5 className="card-header">Books in the library:</h5>
         <div className="card-body">
           <ul className="list-group">
-            {stories?.map((s) => (
-              <LineH key={s[1][0].id} storie={s} />
-            ))}
+            {books?.map((b) => (b.show ? <LineH key={b.id} book={b} /> : null))}
           </ul>
         </div>
       </div>

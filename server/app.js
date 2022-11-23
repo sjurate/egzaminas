@@ -18,7 +18,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "fund_me",
+  database: "library",
 });
 
 //////////////////// LOGIN START /////////////////
@@ -139,6 +139,145 @@ app.get("/home/users", (req, res) => {
     res.send(result);
   });
 });
+
+// CREATE CATEGORY
+
+app.post("/home/categories", (req, res) => {
+  const sql = `
+    INSERT INTO categories (title)
+    VALUES (?)
+    `;
+  con.query(sql, [req.body.title], (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+// READ CATEGORIES
+
+app.get("/home/categories", (req, res) => {
+  const sql = `
+    SELECT *
+    FROM categories
+    ORDER BY id DESC
+    `;
+  con.query(sql, (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+// DELETE CATEGORY
+
+app.delete("/home/categories/:id", (req, res) => {
+  const sql = `
+  DELETE FROM categories WHERE id = ?
+  `;
+  con.query(sql, [req.params.id], (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+// CREATE BOOK
+
+app.post("/home/books", (req, res) => {
+  const sql = `
+    INSERT INTO books (author, name, image, category_id)
+    VALUES (?, ?, ?, ?)
+    `;
+  con.query(
+    sql,
+    [req.body.author, req.body.name, req.body.image, req.body.category_id],
+    (err, result) => {
+      if (err) throw err;
+      res.send(result);
+    }
+  );
+});
+
+// READ LIST OF BOOKS
+
+app.get("/home/books", (req, res) => {
+  const sql = `
+  SELECT *
+  FROM books
+  ORDER BY id DESC
+  `;
+  con.query(sql, (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+// DELETE book
+
+app.delete("/home/books/:id", (req, res) => {
+  const sql = `
+    DELETE FROM books
+    WHERE id = ?
+    `;
+  con.query(sql, [req.params.id], (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+// UPDATE book
+
+app.put("/home/books/:id", (req, res) => {
+  let sql;
+  let r;
+  if (req.body.deletePhoto) {
+    sql = `
+        UPDATE books
+        SET author = ?, name = ?, category_id = ?, image = null
+        WHERE id = ?
+        `;
+    r = [req.body.author, req.body.name, req.body.category_id, req.params.id];
+  } else if (req.body.image) {
+    sql = `
+        UPDATE books
+        SET author = ?,  name = ?, category_id = ?, image = ?
+        WHERE id = ?
+        `;
+    r = [
+      req.body.author,
+      req.body.name,
+      req.body.category_id,
+      req.body.image,
+      req.params.id,
+    ];
+  } else {
+    sql = `
+        UPDATE books
+        SET author = ?, name = ?, category_id = ?
+        WHERE id = ?
+        `;
+    r = [req.body.author, req.body.name, req.body.category_id, req.params.id];
+  }
+  con.query(sql, r, (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+// UPDATE BOOK - reserve
+
+app.put("/home/books/:id", (req, res) => {
+  const sql = `
+  UPDATE books
+  SET 
+  status = ?
+  WHERE id = ?
+  `;
+  con.query(sql, [req.body.status, req.params.id], (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+//**************************************************************************************************
 
 // CREATE STORIE for user
 
@@ -312,5 +451,5 @@ app.delete("/home/stories/:id", (req, res) => {
 //******************************************************************************************************* */
 
 app.listen(port, () => {
-  console.log(`Siuvykla per ${port} portą!`);
+  console.log(`Biblioteka per ${port} portą!`);
 });

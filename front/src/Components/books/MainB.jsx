@@ -1,70 +1,69 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import StoriesUserContext from "../../Contexts/StoriesUserContext";
-import DataContext from "../../Contexts/DataContext";
-import CreateS from "./CreateS";
-import ListS from "./ListS";
-import EditS from "./EditS";
+import BooksContext from "../../Contexts/BooksContext";
+//import DataContext from "../../Contexts/DataContext";
+import CreateB from "./CreateB";
+import ListB from "./ListB";
+import EditB from "./EditB";
 import { authConfig } from "../../Functions/auth";
 
-function MainS() {
+function MainB() {
   const [lastUpdate, setLastUpdate] = useState(Date.now());
   const [createData, setCreateData] = useState(null);
-  const [stories, setStories] = useState(null);
+  const [categories, setCategories] = useState(null);
+  const [books, setBooks] = useState(null);
   const [deleteData, setDeleteData] = useState(null);
   const [modalData, setModalData] = useState(null);
   const [editData, setEditData] = useState(null);
 
-  const { currentUser } = useContext(DataContext);
-  const currentUserId = currentUser[0]?.id;
+  // const { currentUser } = useContext(DataContext);
+  // const currentUserId = currentUser[0]?.id;
 
-  // READ for list
-  // useEffect(() => {
-  //   axios
-  //     .get("http://localhost:3003/home/stories", authConfig())
-  //     .then((res) => {
-  //       setStories(res.data);
-  //     });
-  // }, [lastUpdate]);
+  // READ for list of categories for select
 
   useEffect(() => {
     axios
-      .get("http://localhost:3003/home/stories/" + currentUserId, authConfig())
+      .get("http://localhost:3003/home/categories", authConfig())
       .then((res) => {
-        setStories(res.data);
+        setCategories(res.data);
       });
-  }, [currentUserId, lastUpdate]);
+  }, [lastUpdate]);
 
-  // CREATE STORIE for user
+  // READ for list of books
+
+  useEffect(() => {
+    axios.get("http://localhost:3003/home/books", authConfig()).then((res) => {
+      setBooks(res.data);
+    });
+  }, [lastUpdate]);
+
+  // CREATE book
 
   useEffect(() => {
     if (null === createData) {
       return;
     }
     axios
-      .post("http://localhost:3003/home/stories", createData, authConfig())
+      .post("http://localhost:3003/home/books", createData, authConfig())
       .then((res) => {
         setLastUpdate(Date.now());
       });
   }, [createData]);
 
-  // DELETE STORIE for user
+  // DELETE book
 
   useEffect(() => {
     if (null === deleteData) {
       return;
     }
     axios
-      .delete(
-        "http://localhost:3003/home/stories/" + deleteData.id,
-        authConfig()
-      )
+      .delete("http://localhost:3003/home/books/" + deleteData.id, authConfig())
       .then((res) => {
         setLastUpdate(Date.now());
       });
   }, [deleteData]);
 
-  // EDIT STORIE for user
+  // EDIT book
 
   useEffect(() => {
     if (null === editData) {
@@ -72,7 +71,7 @@ function MainS() {
     }
     axios
       .put(
-        "http://localhost:3003/home/stories/" + editData.id,
+        "http://localhost:3003/home/books/" + editData.id,
         editData,
         authConfig()
       )
@@ -82,30 +81,30 @@ function MainS() {
   }, [editData]);
 
   return (
-    <StoriesUserContext.Provider
+    <BooksContext.Provider
       value={{
         setCreateData,
-        stories,
+        categories,
+        books,
         setDeleteData,
         modalData,
         setModalData,
         setEditData,
-        currentUserId,
       }}
     >
       <div className="container">
         <div className="row">
           <div className="col col-lg-4 col-md-12">
-            <CreateS />
+            <CreateB />
           </div>
           <div className="col col-lg-8 col-md-12">
-            <ListS />
+            <ListB />
           </div>
         </div>
       </div>
-      <EditS />
-    </StoriesUserContext.Provider>
+      <EditB />
+    </BooksContext.Provider>
   );
 }
 
-export default MainS;
+export default MainB;

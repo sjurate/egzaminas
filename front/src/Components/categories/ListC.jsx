@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import StoriesAdminContext from "../../Contexts/StoriesAdminContext";
-import LineSA from "./LineSA";
+import CategoriesContext from "../../Contexts/CategoriesContext";
+import LineC from "./LineC";
 
-function ListSA() {
-  const { stories } = useContext(StoriesAdminContext);
+function ListC() {
+  const { categories } = useContext(CategoriesContext);
 
   return (
     <>
@@ -11,8 +11,8 @@ function ListSA() {
         <h5 className="card-header">Stories:</h5>
         <div className="card-body">
           <ul className="list-group">
-            {stories?.map((s) => (
-              <LineSA key={s.id} storie={s} />
+            {categories?.map((c) => (
+              <LineC key={c.id} category={c} />
             ))}
           </ul>
         </div>
@@ -21,4 +21,4 @@ function ListSA() {
   );
 }
 
-export default ListSA;
+export default ListC;
