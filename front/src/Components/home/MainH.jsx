@@ -9,6 +9,8 @@ function MainH() {
   const [books, setBooks] = useState(null);
   const [categories, setCategories] = useState(null);
   const [statusData, setStatusData] = useState(null);
+  const [extendData, setExtendData] = useState(null);
+
   const filterOn = useRef(false);
   const filterWhat = useRef(null);
 
@@ -68,6 +70,21 @@ function MainH() {
       });
   }, [statusData]);
 
+  useEffect(() => {
+    if (extendData === null) {
+      return;
+    }
+    axios
+      .put(
+        "http://localhost:3003/home/books-hp-extend/" + extendData.id,
+        extendData,
+        authConfig()
+      )
+      .then((res) => {
+        setLastUpdate(Date.now());
+      });
+  }, [extendData]);
+
   return (
     <HomeContext.Provider
       value={{
@@ -77,6 +94,7 @@ function MainH() {
         filterOn,
         filterWhat,
         categories,
+        setExtendData,
       }}
     >
       <div className="container">

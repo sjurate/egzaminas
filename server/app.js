@@ -212,36 +212,6 @@ app.get("/home/books", (req, res) => {
   });
 });
 
-// app.get("/home/komentarai", (req, res) => {
-//   const sql = `
-//   SELECT k.*, s.title AS savivaldybeTitle, s.id AS sid, s.image AS savivaldybeImage, sr.title AS sritisTitle, sr.id AS srid
-//   FROM komentarai AS k
-//   INNER JOIN savivaldybes AS s
-//   ON k.savivaldybe_id = s.id
-//   INNER JOIN sritys AS sr
-//   ON k.sritis_id = sr.id
-//   WHERE k.status = 1
-//   `;
-//   con.query(sql, (err, result) => {
-//     if (err) throw err;
-//     res.send(result);
-//   });
-// });
-
-// app.get("/home/movies", (req, res) => {
-//   const sql = `
-//   SELECT m.* c.title AS catTitle, c.id AS cid
-//   FROM movies AS m
-//   INNER JOIN cats AS c
-//   ON m.cat_id = c.id
-//   ORDER BY m.title
-//   `;
-//   con.query(sql, (err, result) => {
-//     if (err) throw err;
-//     res.send(result);
-//   });
-// });
-
 // DELETE book
 
 app.delete("/home/books/:id", (req, res) => {
@@ -309,178 +279,21 @@ app.put("/home/books-hp/:id", (req, res) => {
   });
 });
 
+app.put("/home/books-hp-extend/:id", (req, res) => {
+  const sql = `
+  UPDATE books
+  SET 
+  term = term + ?,
+  term_count = term_count + 1
+  WHERE id = ?
+  `;
+  con.query(sql, [req.body.term, req.params.id], (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
 //**************************************************************************************************
-
-// CREATE STORIE for user
-
-app.post("/home/stories", (req, res) => {
-  const sql = `
-    INSERT INTO stories (title, info, amount_wanted, amount_left, image, user_id)
-    VALUES (?, ?, ?, ?, ?, ?)
-    `;
-  con.query(
-    sql,
-    [
-      req.body.title,
-      req.body.info,
-      req.body.amount_wanted,
-      req.body.amount_left,
-      req.body.image,
-      req.body.user_id,
-    ],
-    (err, result) => {
-      if (err) throw err;
-      res.send(result);
-    }
-  );
-});
-
-// CREATE DONATION for user
-
-app.post("/home/donations", (req, res) => {
-  const sql = `
-    INSERT INTO donations (name, amount_donating, storie_id)
-    VALUES (?, ?, ?)
-    `;
-  con.query(
-    sql,
-    [req.body.name, req.body.amount_donating, req.body.storie_id],
-    (err, result) => {
-      if (err) throw err;
-      res.send(result);
-    }
-  );
-});
-
-//  READ STORIES for CURRENT USER
-
-app.get("/home/stories/:currentUserId", (req, res) => {
-  const sql = `
-  SELECT *
-    FROM stories
-    WHERE stories.user_id = ?
-    
-    `;
-  con.query(sql, [req.params.currentUserId], (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
-});
-
-// READ STORIES for admin
-
-app.get("/home/stories-admin", (req, res) => {
-  const sql = `
-    SELECT *
-    FROM stories
-    ORDER BY id DESC
-    `;
-  con.query(sql, (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
-});
-
-// READ STORIES for home page
-
-app.get("/home/stories-hp", (req, res) => {
-  const sql = `
-  SELECT s.*, d.id AS did, d.name, d.amount_donating
-    FROM stories AS s
-    LEFT JOIN donations AS d
-    ON d.storie_id = s.id
-    WHERE s.status = 1
-    ORDER BY s.id
-    `;
-  con.query(sql, (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
-});
-
-// UPDATE STORIE for user
-
-app.put("/home/stories/:id", (req, res) => {
-  let sql;
-  let r;
-  if (req.body.deletePhoto) {
-    sql = `
-        UPDATE stories
-        SET title = ?, info = ?, amount_wanted = ?, image = null
-        WHERE id = ?
-        `;
-    r = [req.body.title, req.body.info, req.body.amount_wanted, req.params.id];
-  } else if (req.body.image) {
-    sql = `
-        UPDATE stories
-        SET title = ?,  info = ?, amount_wanted = ?, image = ?
-        WHERE id = ?
-        `;
-    r = [
-      req.body.title,
-      req.body.info,
-      req.body.amount_wanted,
-      req.body.image,
-      req.params.id,
-    ];
-  } else {
-    sql = `
-        UPDATE stories
-        SET title = ?, info = ?, amount_wanted = ?
-        WHERE id = ?
-        `;
-    r = [req.body.type, req.body.color, req.body.price, req.params.id];
-  }
-  con.query(sql, r, (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
-});
-
-// UPDATE STORIE for admin - APPROVE
-
-app.put("/home/stories-admin/:id", (req, res) => {
-  const sql = `
-    UPDATE stories
-    SET status = ?
-    WHERE id = ?
-    `;
-  con.query(sql, [req.body.status, req.params.id], (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
-});
-
-// UPDATE STORIE - add donation
-
-app.put("/home/stories-donation/:id", (req, res) => {
-  const sql = `
-    UPDATE stories
-    SET 
-    amount_collected = amount_collected + ?,
-    amount_left = amount_wanted - amount_collected
-    WHERE id = ?
-    `;
-  con.query(sql, [req.body.amount_donating, req.params.id], (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
-});
-
-// DELETE STORIE for user
-
-app.delete("/home/stories/:id", (req, res) => {
-  const sql = `
-    DELETE FROM stories
-    WHERE id = ?
-    `;
-  con.query(sql, [req.params.id], (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
-});
-
-//******************************************************************************************************* */
 
 app.listen(port, () => {
   console.log(`Biblioteka per ${port} portą!`);

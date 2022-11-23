@@ -3,13 +3,21 @@ import { useContext } from "react";
 import HomeContext from "../../Contexts/HomeContext";
 
 function LineH({ book }) {
-  const { setStatusData } = useContext(HomeContext);
+  const { setStatusData, setExtendData } = useContext(HomeContext);
   // const { setMsg } = useContext(DataContext);
 
   const reserve = () => {
     setStatusData({
       id: book.id,
       status: 1,
+      term: 30,
+    });
+  };
+
+  const extendReservation = () => {
+    setExtendData({
+      id: book.id,
+      term: 30,
     });
   };
 
@@ -40,6 +48,11 @@ function LineH({ book }) {
                 ? "Unavailable at the moment"
                 : "You can reserve this book"}
             </div>
+            {book.status === 1 ? (
+              <div className="li-content-details">
+                Book reserved for {book.term} days
+              </div>
+            ) : null}
           </div>
           {book.status === 0 ? (
             <button
@@ -48,6 +61,15 @@ function LineH({ book }) {
               className="btn btn-outline-success reserve-btn"
             >
               Reserve
+            </button>
+          ) : null}
+          {book.status === 1 && book.term_count < 2 ? (
+            <button
+              onClick={extendReservation}
+              type="button"
+              className="btn btn-outline-success reserve-btn"
+            >
+              Extend reservation
             </button>
           ) : null}
         </div>
