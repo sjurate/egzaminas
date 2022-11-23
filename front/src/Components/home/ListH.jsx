@@ -11,7 +11,10 @@ import LineH from "./LineH";
 // ];
 
 function ListH() {
-  const { books, setBooks } = useContext(HomeContext);
+  const { books, setBooks, filterOn, filterWhat, categories } =
+    useContext(HomeContext);
+
+  const [categoryId, setCategoryId] = useState(0);
 
   //const [sortBy, setSortBy] = useState("default");
   // const [stats, setStats] = useState({ movieCount: null });
@@ -48,8 +51,55 @@ function ListH() {
   //   }
   // }, [sortBy, setMovies]);
 
+  useEffect(() => {
+    setBooks((prevBooks) =>
+      prevBooks?.map((b) =>
+        Number(b.category_id) === Number(categoryId) || Number(categoryId) === 0
+          ? { ...b, show: true }
+          : { ...b, show: false }
+      )
+    );
+  }, [categoryId, setBooks]);
+
+  // const filtruoti = () => {
+  //   setKomentarai((prevKom) =>
+  //     prevKom?.map((k) =>
+  //       (Number(k.srid) === Number(sritisId) || sritisId === 0) &&
+  //       (Number(k.sid) === Number(savivaldybeId) || savivaldybeId === 0)
+  //         ? { ...k, show: true }
+  //         : { ...k, show: false }
+  //     )
+  //   );
+  // };
+
+  const resetFilter = () => {
+    setBooks((prevBooks) => prevBooks.map((b) => ({ ...b, show: true })));
+    filterOn.current = false;
+    filterWhat.current = null;
+  };
+
   return (
     <>
+      <div className="card m-4">
+        <h5 className="card-header">Filter by:</h5>
+        <div className="card-body">
+          <div className="mb-3">
+            <label className="form-label">By category</label>
+            <select
+              className="form-select"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+            >
+              <option value={0}>All categories</option>
+              {categories?.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.title}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
       {/* <div className="card m-4">
         <h5 className="card-header">Sort</h5>
         <div className="card-body">
@@ -72,6 +122,12 @@ function ListH() {
       </div> */}
       <div className="card m-4">
         <h5 className="card-header">Books in the library:</h5>
+        <small
+          onClick={resetFilter}
+          className="click-link reset-filter show-all"
+        >
+          show all books
+        </small>
         <div className="card-body">
           <ul className="list-group">
             {books?.map((b) => (b.show ? <LineH key={b.id} book={b} /> : null))}

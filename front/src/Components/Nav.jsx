@@ -17,7 +17,7 @@ function Nav({ status }) {
         <nav className="navbar navbar-expand-md navbar-dark bg-dark col-12">
           <div className="container-fluid">
             <span className="navbar-brand click-link" onClick={goHome}>
-              GoFundMe
+              Library
             </span>
             <div>
               <div className="navbar-nav" id={showLinks ? "hidden" : ""}>
@@ -32,7 +32,7 @@ function Nav({ status }) {
                     Home
                   </NavLink>
                 ) : null}
-                {status === 2 || status === 3 || status === 4 ? (
+                {/* {status === 2 || status === 3 || status === 4 ? (
                   <NavLink
                     to="/stories-user"
                     className={({ isActive }) =>
@@ -41,15 +41,25 @@ function Nav({ status }) {
                   >
                     My Stories
                   </NavLink>
-                ) : null}
+                ) : null} */}
                 {status === 3 ? (
                   <NavLink
-                    to="/stories-admin"
+                    to="/categories"
                     className={({ isActive }) =>
                       isActive ? "nav-link active" : "nav-link"
                     }
                   >
-                    Stories
+                    Categories
+                  </NavLink>
+                ) : null}
+                {status === 3 ? (
+                  <NavLink
+                    to="/books"
+                    className={({ isActive }) =>
+                      isActive ? "nav-link active" : "nav-link"
+                    }
+                  >
+                    Books
                   </NavLink>
                 ) : null}
                 {status !== 1 ? (

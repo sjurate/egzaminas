@@ -128,17 +128,17 @@ app.post("/register", (req, res) => {
 
 // READ CURRENT USER
 
-app.get("/home/users", (req, res) => {
-  const sql = `
-  SELECT *
-  FROM users
-  WHERE session = ?
-`;
-  con.query(sql, [req.headers["authorization"] || ""], (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
-});
+// app.get("/home/users", (req, res) => {
+//   const sql = `
+//   SELECT *
+//   FROM users
+//   WHERE session = ?
+// `;
+//   con.query(sql, [req.headers["authorization"] || ""], (err, result) => {
+//     if (err) throw err;
+//     res.send(result);
+//   });
+// });
 
 // CREATE CATEGORY
 
@@ -200,8 +200,10 @@ app.post("/home/books", (req, res) => {
 
 app.get("/home/books", (req, res) => {
   const sql = `
-  SELECT *
-  FROM books
+  SELECT b.*, c.title AS categoryTitle
+  FROM books AS b
+  INNER JOIN categories AS c
+  ON b.category_id = c.id
   ORDER BY id DESC
   `;
   con.query(sql, (err, result) => {
@@ -209,6 +211,36 @@ app.get("/home/books", (req, res) => {
     res.send(result);
   });
 });
+
+// app.get("/home/komentarai", (req, res) => {
+//   const sql = `
+//   SELECT k.*, s.title AS savivaldybeTitle, s.id AS sid, s.image AS savivaldybeImage, sr.title AS sritisTitle, sr.id AS srid
+//   FROM komentarai AS k
+//   INNER JOIN savivaldybes AS s
+//   ON k.savivaldybe_id = s.id
+//   INNER JOIN sritys AS sr
+//   ON k.sritis_id = sr.id
+//   WHERE k.status = 1
+//   `;
+//   con.query(sql, (err, result) => {
+//     if (err) throw err;
+//     res.send(result);
+//   });
+// });
+
+// app.get("/home/movies", (req, res) => {
+//   const sql = `
+//   SELECT m.* c.title AS catTitle, c.id AS cid
+//   FROM movies AS m
+//   INNER JOIN cats AS c
+//   ON m.cat_id = c.id
+//   ORDER BY m.title
+//   `;
+//   con.query(sql, (err, result) => {
+//     if (err) throw err;
+//     res.send(result);
+//   });
+// });
 
 // DELETE book
 
@@ -264,7 +296,7 @@ app.put("/home/books/:id", (req, res) => {
 
 // UPDATE BOOK - reserve
 
-app.put("/home/books/:id", (req, res) => {
+app.put("/home/books-hp/:id", (req, res) => {
   const sql = `
   UPDATE books
   SET 

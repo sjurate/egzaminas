@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import BooksContext from "../../Contexts/BooksContext";
+import DataContext from "../../Contexts/DataContext";
 import getBase64 from "../../Functions/getBase64";
 
 function EditB() {
@@ -13,6 +14,8 @@ function EditB() {
   const [cat, setCat] = useState(0);
   const [deletePhoto, setDeletePhoto] = useState(false);
 
+  const { setMsg } = useContext(DataContext);
+
   const doPhoto = () => {
     getBase64(fileInput.current.files[0])
       .then((photo) => setPhotoPrint(photo))
@@ -25,6 +28,18 @@ function EditB() {
     useContext(BooksContext);
 
   const edit = () => {
+    if (author === "" || name === "") {
+      setMsg("Please fill all required fields");
+      return;
+    }
+    if (author.length < 3 || author.length > 50) {
+      setMsg("Author name must be longer than 2 and shorter than 50 symbols");
+      return;
+    }
+    if (name.length < 2 || name.length > 50) {
+      setMsg("Title must be longer than 2 and shorter than 50 symbols");
+      return;
+    }
     setEditData({
       author,
       name,

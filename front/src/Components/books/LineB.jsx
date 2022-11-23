@@ -18,13 +18,13 @@ function LineB({ book }) {
             )}
           </div>
           <div className="li-content-one-info">
-            <div className="li-content-details">Title {book.title}</div>
+            <div className="li-content-details">Title: {book.name}</div>
             <div className="li-content-details">Author: {book.author}</div>
             <div className="li-content-details">
-              Category: {book.category_id}
+              Category: {book.categoryTitle}
             </div>
             <div className="li-content-details">
-              Status: {book.status ? "Not reserved" : "Reserved"}
+              Status: {book.status ? "Reserved" : "Not Reserved"}
             </div>
           </div>
         </div>

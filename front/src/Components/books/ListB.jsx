@@ -7,7 +7,7 @@ function ListB() {
 
   return (
     <div className="card m-4">
-      <h5 className="card-header">Books List</h5>
+      <h5 className="card-header">Books:</h5>
       <div className="card-body">
         <ul className="list-group">
           {books?.map((b) => (

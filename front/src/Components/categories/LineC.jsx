@@ -17,9 +17,7 @@ function LineC({ category }) {
       <div className="li-content-one">
         <div className="li-content-one-main">
           <div className="li-content-one-info">
-            <div className="li-content-details">
-              Category title: {category.title}
-            </div>
+            <div className="li-content-details">{category.title}</div>
           </div>
         </div>
       </div>

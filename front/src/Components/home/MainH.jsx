@@ -7,6 +7,7 @@ import { authConfig } from "../../Functions/auth";
 function MainH() {
   const [lastUpdate, setLastUpdate] = useState(Date.now());
   const [books, setBooks] = useState(null);
+  const [categories, setCategories] = useState(null);
   const [statusData, setStatusData] = useState(null);
   const filterOn = useRef(false);
   const filterWhat = useRef(null);
@@ -22,6 +23,15 @@ function MainH() {
   //   });
   //   return [...d];
   // };
+
+  // READ for list of categories
+  useEffect(() => {
+    axios
+      .get("http://localhost:3003/home/categories", authConfig())
+      .then((res) => {
+        setCategories(res.data);
+      });
+  }, [lastUpdate]);
 
   // READ for list of books
 
@@ -49,7 +59,7 @@ function MainH() {
     }
     axios
       .put(
-        "http://localhost:3003/home/books/" + statusData.id,
+        "http://localhost:3003/home/books-hp/" + statusData.id,
         statusData,
         authConfig()
       )
@@ -66,6 +76,7 @@ function MainH() {
         setStatusData,
         filterOn,
         filterWhat,
+        categories,
       }}
     >
       <div className="container">

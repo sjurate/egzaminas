@@ -5,8 +5,8 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import "./App.scss";
 import Nav from "./Components/Nav";
 import Home from "./Components/home/MainH";
-import StoriesUser from "./Components/stories-user/MainS";
-import StoriesAdmin from "./Components/stories-admin/MainSA";
+import Categories from "./Components/categories/MainC";
+import Books from "./Components/books/MainB";
 import LoginPage from "./Components/loging/LoginPage";
 import LogoutPage from "./Components/loging/LogoutPage";
 import RegisterPage from "./Components/register/MainR";
@@ -16,15 +16,15 @@ import DataContext from "./Contexts/DataContext";
 
 function App() {
   const [roleChange, setRoleChange] = useState(Date.now());
-  const [currentUser, setCurrentUser] = useState(null);
+  //const [currentUser, setCurrentUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [showLinks, setShowLinks] = useState(false);
 
-  useEffect(() => {
-    axios.get("http://localhost:3003/home/users/", authConfig()).then((res) => {
-      setCurrentUser(res.data);
-    });
-  }, [roleChange]);
+  // useEffect(() => {
+  //   axios.get("http://localhost:3003/home/users/", authConfig()).then((res) => {
+  //     setCurrentUser(res.data);
+  //   });
+  // }, [roleChange]);
 
   const setMsg = useCallback((text) => {
     const message = {
@@ -46,7 +46,7 @@ function App() {
           messages,
           setMessages,
           setMsg,
-          currentUser,
+          // currentUser,
           showLinks,
           setShowLinks,
         }}
@@ -63,18 +63,18 @@ function App() {
             }
           ></Route>
           <Route
-            path="/stories-user"
+            path="/categories"
             element={
               <RequireAuth role="user">
-                <StoriesUser />
+                <Categories />
               </RequireAuth>
             }
           ></Route>
           <Route
-            path="/stories-admin"
+            path="/books"
             element={
               <RequireAuth role="admin">
-                <StoriesAdmin />
+                <Books />
               </RequireAuth>
             }
           ></Route>

@@ -5,7 +5,7 @@ import CategoriesContext from "../../Contexts/CategoriesContext";
 function CreateC() {
   const [title, setTitle] = useState("");
 
-  const { setCreateData, currentUserId } = useContext(CategoriesContext);
+  const { setCreateData } = useContext(CategoriesContext);
   const { setMsg } = useContext(DataContext);
 
   const add = () => {
@@ -19,14 +19,13 @@ function CreateC() {
     }
     setCreateData({
       title,
-      user_id: Number(currentUserId),
     });
     setTitle("");
   };
 
   return (
     <div className="card m-4">
-      <h5 className="card-header">New Category</h5>
+      <h5 className="card-header">Add Category</h5>
       <div className="card-body">
         <div className="mb-3">
           <label className="form-label">Title</label>
